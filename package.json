@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "ant-design-vue": "^4.2.6",
+    "highlight.js": "^11.11.1",
+    "monaco-editor": "^0.55.1",
+    "sql-formatter": "^15.7.2",
+    "sql.js": "^1.14.1"
+  }
+}
