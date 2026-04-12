@@ -19,6 +19,16 @@ const router = createRouter({
       name:'playgroundpage',
       component:()=>import('../views/PlaygroundPage.vue'),
     },
+    {
+      path:'/learn/:levelKey',
+      name:'learnpage',
+      component:()=>import('../views/LearnPage.vue'),
+    },
+    {
+      path:'/history',
+      name:'history',
+      component:()=>import('../views/HistoryPage.vue'),
+    },
   ],
 })
 

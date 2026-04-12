@@ -1,5 +1,9 @@
 <!-- 添加相关资源部分的模块组件 -->
  <script setup>
+import w3SchoolImg from '../assets/img/W3_School.jpg';
+import leetCodeImg from '../assets/img/Leet_Code.jpg';
+import bilibiliImg from '../assets/img/bilibili.jpg';
+import csdnImg from '../assets/img/CSDN.jpg';
 
 // 接收父组件传递的可见性状态
 // eslint-disable-next-line no-unused-vars
@@ -9,12 +13,12 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-// 资源数据列表 (你可以根据需要修改这里)
+// 资源数据列表
 const resources = [
-  { name: 'W3School SQL', url: 'https://www.w3school.com.cn/sql/index.asp', logo: 'https://www.w3school.com.cn/ui2019/logo_60.png' },
-  { name: 'LeetCode 数据库', url: 'https://leetcode.cn/problemset/database/', logo: 'https://leetcode.cn/favicon.ico' },
-  { name: 'Stack Overflow', url: 'https://stackoverflow.com/questions/tagged/sql', logo: 'https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png' },
-  { name: 'CSDN 社区', url: 'https://www.csdn.net/', logo: 'https://img-home.csdnimg.cn/images/20201124032511.png' }
+  { name: 'W3School SQL', url: 'https://www.w3school.com.cn/sql/index.asp', logo: w3SchoolImg },
+  { name: 'LeetCode 数据库', url: 'https://leetcode.cn/problemset/database/', logo: leetCodeImg },
+  { name: 'BiliBili', url: 'https://www.bilibili.com/', logo: bilibiliImg },
+  { name: 'CSDN 社区', url: 'https://www.csdn.net/', logo: csdnImg }
 ];
 
 const close = () => {

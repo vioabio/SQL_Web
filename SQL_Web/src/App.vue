@@ -1,13 +1,36 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
 import ResourceModal from './components/ResourceModal.vue'
-import { ref} from 'vue';
+import LoginModal from './components/LoginModal.vue'
+import { ref, onMounted } from 'vue';
+import { getUser, clearUser } from './core/userStore';
 
 const isShowModal = ref(false);
+const isShowLoginModal = ref(false);
+const currentUser = ref(null);
 
 const toggleModal = () => {
   isShowModal.value = !isShowModal.value;
 };
+
+// 检查登录状态
+const checkLogin = () => {
+  currentUser.value = getUser();
+};
+
+const handleLoginSuccess = (user) => {
+  currentUser.value = user;
+  isShowLoginModal.value = false;
+};
+
+const handleLogout = () => {
+  clearUser();
+  currentUser.value = null;
+};
+
+onMounted(() => {
+  checkLogin();
+});
 </script>
 
 <template>
@@ -22,20 +45,42 @@ const toggleModal = () => {
       <router-link to="/" class="top-nav-link">MySQL学习</router-link>
       <router-link to="/levelpage" class="top-nav-link">MySQL关卡</router-link>
       <router-link to="/playgroundpage" class="top-nav-link">MySQL广场</router-link>
+      <!-- 设置MySQL和Git的打开方式为_blank，另外打开一个新界面 -->
       <div class="top-nav-weblink">
         <img src="./assets/img/MySQL_logo.jpg" alt="MySQL官网">
-        <a href="https://www.mysql.com/">MySQL</a>
+        <a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">MySQL</a>
       </div>
       <div class="top-nav-weblink">
         <img src="./assets/img/Github_logo.jpg" alt="GitHub官网">
-        <a href="https://github.com/">GitHub开源</a>
+        <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub开源</a>
       </div>
       <!-- 添加相关资源：点击按钮出现弹窗，上面给出其他网站的跳转按钮 -->
       <div class="top-nav-link" @click="toggleModal" style="cursor: pointer;">相关资源</div>
-      
+
+      <!-- 用户登录/历史记录 -->
+      <div v-if="currentUser" class="user-info">
+        <router-link to="/history" class="top-nav-link">做题记录</router-link>
+        <a-dropdown>
+          <a class="user-name">{{ currentUser.username }}</a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item key="history">
+                <router-link to="/history">做题记录</router-link>
+              </a-menu-item>
+              <a-menu-divider />
+              <a-menu-item key="logout" @click="handleLogout">退出登录</a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
+      <div v-else class="top-nav-link" @click="isShowLoginModal = true" style="cursor: pointer;">
+        登录
+      </div>
+
     </div>
   </header>
   <ResourceModal :isVisible="isShowModal" @close="isShowModal = false" />
+  <LoginModal :visible="isShowLoginModal" @close="isShowLoginModal = false" @success="handleLoginSuccess" />
   <main class="mian-content">
     <router-view></router-view>
   </main>
@@ -121,6 +166,26 @@ const toggleModal = () => {
 
 .top-nav-weblink a:hover {
   color: #ffffff;
+}
+
+/* 用户信息 */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-name {
+  color: #4ade80;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.user-name:hover {
+  background-color: #4a4a4a;
 }
 
 /* 主内容区 */
