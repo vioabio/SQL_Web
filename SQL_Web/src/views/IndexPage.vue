@@ -12,6 +12,7 @@
           :result-status="resultStatus"
           :on-submit="onSubmit"
         />
+        <!-- eslint-disable-next-line vue/no-v-model-argument -->
         <a-collapse v-model:active-key="activeKeys" style="margin-top: 16px">
           <a-collapse-panel
             key="result"
@@ -98,10 +99,21 @@ watch([level], () => {
  * @param {string} errorMsg
  */
 const onSubmit = (sql, res, answerRes, errorMsg) => {
+  console.log('IndexPage onSubmit 收到:', {
+    sqlLength: sql?.length,
+    res: JSON.stringify(res)?.substring(0, 100),
+    answerRes: JSON.stringify(answerRes)?.substring(0, 100),
+    errorMsg
+  });
   result.value = res;
   answerResult.value = answerRes;
   errorMsgRef.value = errorMsg;
   resultStatus.value = checkResult(res, answerRes);
+  console.log('IndexPage onSubmit 后状态:', {
+    result: JSON.stringify(result.value)?.substring(0, 100),
+    answerResult: JSON.stringify(answerResult.value)?.substring(0, 100),
+    resultStatus: resultStatus.value
+  });
 };
 
 // eslint-disable-next-line no-unused-vars

@@ -28,7 +28,13 @@
             :on-submit="onSubmit"
           />
           <a-card title="执行结果" style="margin-top: 16px">
-            <SqlResult :result="result" />
+            <SqlResult
+              :result="result"
+              :answer-result="answerResult"
+              :result-status="resultStatus"
+              :error-msg="errorMsg"
+              :level="currentLevel"
+            />
           </a-card>
         </a-col>
       </a-row>
@@ -71,9 +77,13 @@ import { LeftOutlined } from "@ant-design/icons-vue";
 import mainLevels from "../levels/mainLevels";
 import customLevels from "../levels/customLevels";
 import { addHistory, getUser } from "../core/userStore";
+import { RESULT_STATUS_ENUM } from "../core/result";
 
 const route = useRoute();
 const result = ref([]);
+const answerResult = ref([]);
+const errorMsg = ref();
+const resultStatus = ref(-1);
 
 // 合并所有关卡
 const allLevels = [...mainLevels, ...customLevels];
@@ -87,8 +97,23 @@ const currentLevel = computed(() => {
 /**
  * 执行 SQL 回调
  */
-const onSubmit = (sql, res, answerRes, errorMsg) => {
+const onSubmit = (sql, res, answerRes, errMsg) => {
   result.value = res;
+  answerResult.value = answerRes || [];
+  errorMsg.value = errMsg;
+
+  // 使用 checkResult 验证结果
+  if (res && res.length > 0 && answerRes && answerRes.length > 0) {
+    // 简单比较：列名和数据是否一致
+    const isMatch =
+      JSON.stringify(res[0]?.columns) === JSON.stringify(answerRes[0]?.columns) &&
+      JSON.stringify(res[0]?.values) === JSON.stringify(answerRes[0]?.values);
+    resultStatus.value = isMatch ? RESULT_STATUS_ENUM.SUCCEED : RESULT_STATUS_ENUM.ERROR;
+  } else if (errMsg) {
+    resultStatus.value = 0; // ERROR
+  } else {
+    resultStatus.value = -1; // DEFAULT
+  }
 
   // 获取当前用户
   const user = getUser();
@@ -96,7 +121,7 @@ const onSubmit = (sql, res, answerRes, errorMsg) => {
 
   // 判断是否通过（结果相同且无错误）
   const isSuccess =
-    !errorMsg &&
+    !errorMsg.value &&
     res &&
     res.length > 0 &&
     answerRes &&
@@ -109,7 +134,7 @@ const onSubmit = (sql, res, answerRes, errorMsg) => {
     levelTitle: currentLevel.value.title,
     sql,
     status: isSuccess ? "success" : "failed",
-    errorMsg: errorMsg || null,
+    errorMsg: errorMsg.value || null,
   });
 
   if (isSuccess) {

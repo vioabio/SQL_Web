@@ -6,7 +6,7 @@ import {
   ref,
   toRaw,
   toRefs,
-  watchEffect,
+  watch,
 } from "vue";
 import * as monaco from "monaco-editor";
 import { format } from "sql-formatter";
@@ -44,18 +44,34 @@ const { level, onSubmit } = toRefs(props);
 const inputEditor = ref();
 const editorRef = ref();
 const db = ref();
+const isDbReady = ref(false);
 
-watchEffect(async () => {
-  // 初始化 / 更新默认 SQL
-  if (inputEditor.value) {
-    toRaw(inputEditor.value).setValue(
-      "-- 请在此处输入 SQL\n" + level.value.defaultSQL
-    );
-  }
-  // 初始化 / 更新 DB
-  db.value = await initDB(level.value.initSQL);
-  doSubmit();
-});
+// 监听 level 变化，初始化数据库
+watch(
+  () => props.level,
+  async (newLevel) => {
+    if (newLevel && newLevel.initSQL) {
+      try {
+        db.value = await initDB(newLevel.initSQL);
+        isDbReady.value = true;
+        
+        // 更新编辑器内容
+        if (inputEditor.value) {
+          toRaw(inputEditor.value).setValue(
+            "-- 请在此处输入 SQL\n" + (newLevel.defaultSQL || '')
+          );
+        }
+        
+        // 数据库初始化完成后执行默认 SQL
+        doSubmit();
+      } catch (e) {
+        console.error('数据库初始化失败:', e);
+        message.error('数据库初始化失败');
+      }
+    }
+  },
+  { immediate: true }
+);
 
 /**
  * SQL 格式化
@@ -74,8 +90,8 @@ const doFormat = () => {
  * 重置
  */
 const doReset = () => {
-  if (inputEditor.value) {
-    toRaw(inputEditor.value).setValue(level.value.defaultSQL);
+  if (inputEditor.value && level.value) {
+    toRaw(inputEditor.value).setValue(level.value.defaultSQL || '');
     doSubmit();
   }
 };
@@ -84,17 +100,40 @@ const doReset = () => {
  * 提交结果
  */
 const doSubmit = () => {
-  if (!inputEditor.value) {
+  if (!inputEditor.value || !db.value) {
+    console.log("编辑器或数据库未初始化");
     return;
   }
   const inputStr = toRaw(inputEditor.value).getValue();
   console.log("inputStr", inputStr);
   try {
+    console.log("开始执行用户SQL...");
     const result = runSQL(db.value, inputStr);
-    const answerResult = runSQL(db.value, level.value.answer);
+    console.log("用户执行结果:", JSON.stringify(result));
+    
+    console.log("开始执行答案SQL...");
+    console.log("答案SQL内容:", level.value?.answer);
+    console.log("level对象:", level.value);
+    let answerResult;
+    try {
+      if (!level.value?.answer) {
+        console.error("答案SQL为空!");
+        answerResult = [];
+      } else {
+        answerResult = runSQL(db.value, level.value.answer);
+        console.log("答案执行结果:", JSON.stringify(answerResult));
+      }
+    } catch (e) {
+      console.error("答案执行失败:", e.message);
+      console.error("答案SQL:", level.value?.answer);
+      answerResult = [];
+    }
+    
     // 向外层传递结果
+    console.log("传递结果到外层...");
     onSubmit.value(inputStr, result, answerResult);
   } catch (error) {
+    console.error("执行出错:", error);
     message.error("语句错误，" + error.message);
     // 向外层传递结果
     onSubmit.value(inputStr, [], [], error.message);
@@ -116,13 +155,6 @@ onMounted(async () => {
         enabled: false,
       },
     });
-    // 自动保存草稿
-    // 暂不开启，刷新后恢复当前关卡的默认 SQL
-    // setInterval(() => {
-    //   if (inputEditor.value) {
-    //     localStorage.setItem("draft", toRaw(inputEditor.value).getValue());
-    //   }
-    // }, 3000);
   }
 });
 

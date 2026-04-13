@@ -1,13 +1,27 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router';
+import { RouterLink, RouterView, useRoute} from 'vue-router';
 import ResourceModal from './components/ResourceModal.vue'
 import LoginModal from './components/LoginModal.vue'
-import { ref, onMounted } from 'vue';
+import DeepSeekPanel from './components/DeepSeekPanel.vue'
+import { ref, onMounted, computed } from 'vue';
 import { getUser, clearUser } from './core/userStore';
+import mainLevels from './levels/mainLevels';
+import customLevels from './levels/customLevels';
+
+const route = useRoute();
 
 const isShowModal = ref(false);
 const isShowLoginModal = ref(false);
 const currentUser = ref(null);
+
+// 获取当前关卡信息（用于传递给 AI 助手）
+const currentLevel = computed(() => {
+  if (route.name === 'learnpage' && route.params.levelKey) {
+    const allLevels = [...mainLevels, ...customLevels];
+    return allLevels.find(l => l.key === route.params.levelKey) || null;
+  }
+  return null;
+});
 
 const toggleModal = () => {
   isShowModal.value = !isShowModal.value;
@@ -81,6 +95,10 @@ onMounted(() => {
   </header>
   <ResourceModal :isVisible="isShowModal" @close="isShowModal = false" />
   <LoginModal :visible="isShowLoginModal" @close="isShowLoginModal = false" @success="handleLoginSuccess" />
+  
+  <!-- DeepSeek AI 助手悬浮窗 -->
+  <DeepSeekPanel :current-level="currentLevel" />
+  
   <main class="mian-content">
     <router-view></router-view>
   </main>
