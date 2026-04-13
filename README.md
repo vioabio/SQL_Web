@@ -2,3 +2,5 @@
 使用localstorage本地化存储机制提供登录机制（任意用户名和密码）
 本地化存储用户的做题记录
 用户登陆后可在关卡界面自由选择主线关卡或者自定义关卡，后续会添加更多操作题目
+
+Deepseek的API Key购买地址https://platform.deepseek.com/usage
