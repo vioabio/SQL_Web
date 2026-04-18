@@ -48,63 +48,67 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="top-nav">
-    <!-- logo -->
-    <div class="top-nav-logo">
-      <img src="./assets/img/SQL_Web_logo.png" alt="SQL_Web" class="logo-img">
-      <span class="logo-name">SQL Web</span>
-    </div>
-    <!-- 导航栏内容 -->
-    <div class="top-nav-links">
-      <router-link to="/" class="top-nav-link">MySQL学习</router-link>
-      <router-link to="/levelpage" class="top-nav-link">MySQL关卡</router-link>
-      <router-link to="/playgroundpage" class="top-nav-link">MySQL广场</router-link>
-      <!-- 设置MySQL和Git的打开方式为_blank，另外打开一个新界面 -->
-      <div class="top-nav-weblink">
-        <img src="./assets/img/MySQL_logo.jpg" alt="MySQL官网">
-        <a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">MySQL</a>
+  <div id="app-container">
+    <header class="top-nav">
+      <!-- logo -->
+      <div class="top-nav-logo">
+        <img src="./assets/img/SQL_Web_logo.png" alt="SQL_Web" class="logo-img">
+        <span class="logo-name">SQL Web</span>
       </div>
-      <div class="top-nav-weblink">
-        <img src="./assets/img/Github_logo.jpg" alt="GitHub官网">
-        <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub开源</a>
-      </div>
-      <!-- 添加相关资源：点击按钮出现弹窗，上面给出其他网站的跳转按钮 -->
-      <div class="top-nav-link" @click="toggleModal" style="cursor: pointer;">相关资源</div>
+      <!-- 导航栏内容 -->
+      <div class="top-nav-links">
+        <router-link to="/" class="top-nav-link">MySQL学习</router-link>
+        <router-link to="/levelpage" class="top-nav-link">MySQL关卡</router-link>
+        <router-link to="/playgroundpage" class="top-nav-link">MySQL广场</router-link>
+        <!-- 设置MySQL和Git的打开方式为_blank，另外打开一个新界面 -->
+        <div class="top-nav-weblink">
+          <img src="./assets/img/MySQL_logo.jpg" alt="MySQL官网">
+          <a href="https://www.mysql.com/" target="_blank" rel="noopener noreferrer">MySQL</a>
+        </div>
+        <div class="top-nav-weblink">
+          <img src="./assets/img/Github_logo.jpg" alt="GitHub官网">
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub开源</a>
+        </div>
+        <!-- 添加相关资源：点击按钮出现弹窗，上面给出其他网站的跳转按钮 -->
+        <div class="top-nav-link" @click="toggleModal" style="cursor: pointer;">相关资源</div>
 
-      <!-- 用户登录/历史记录 -->
-      <div v-if="currentUser" class="user-info">
-        <router-link to="/history" class="top-nav-link">做题记录</router-link>
-        <a-dropdown>
-          <a class="user-name">{{ currentUser.username }}</a>
-          <template #overlay>
-            <a-menu>
-              <a-menu-item key="history">
-                <router-link to="/history">做题记录</router-link>
-              </a-menu-item>
-              <a-menu-divider />
-              <a-menu-item key="logout" @click="handleLogout">退出登录</a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
-      <div v-else class="top-nav-link" @click="isShowLoginModal = true" style="cursor: pointer;">
-        登录
-      </div>
+        <!-- 用户登录/历史记录 -->
+        <div v-if="currentUser" class="user-info">
+          <router-link to="/history" class="top-nav-link">做题记录</router-link>
+          <a-dropdown>
+            <a class="user-name">{{ currentUser.username }}</a>
+            <template #overlay>
+              <a-menu>
+                <a-menu-item key="history">
+                  <router-link to="/history">做题记录</router-link>
+                </a-menu-item>
+                <a-menu-divider />
+                <a-menu-item key="logout" @click="handleLogout">退出登录</a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
+        <div v-else class="top-nav-link" @click="isShowLoginModal = true" style="cursor: pointer;">
+          登录
+        </div>
 
+      </div>
+    </header>
+    <ResourceModal :isVisible="isShowModal" @close="isShowModal = false" />
+    <LoginModal :visible="isShowLoginModal" @close="isShowLoginModal = false" @success="handleLoginSuccess" />
+    
+    <!-- DeepSeek AI 助手悬浮窗 -->
+    <DeepSeekPanel :current-level="currentLevel" />
+    
+    <div class="page-container">
+      <main class="main-content">
+        <router-view></router-view>
+      </main>
+      <footer class="footer">
+        <div>底部界面</div>
+      </footer>
     </div>
-  </header>
-  <ResourceModal :isVisible="isShowModal" @close="isShowModal = false" />
-  <LoginModal :visible="isShowLoginModal" @close="isShowLoginModal = false" @success="handleLoginSuccess" />
-  
-  <!-- DeepSeek AI 助手悬浮窗 -->
-  <DeepSeekPanel :current-level="currentLevel" />
-  
-  <main class="mian-content">
-    <router-view></router-view>
-  </main>
-  <footer class="footer">
-    <div>底部界面</div>
-  </footer>
+  </div>
 </template>
 
 <style scoped>
