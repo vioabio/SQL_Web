@@ -5,5 +5,8 @@
     "monaco-editor": "^0.55.1",
     "sql-formatter": "^15.7.2",
     "sql.js": "^1.14.1"
+  },
+  "devDependencies": {
+    "vite-plugin-pwa": "^1.0.0"
   }
 }
