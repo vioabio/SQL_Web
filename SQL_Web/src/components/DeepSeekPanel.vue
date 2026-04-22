@@ -8,7 +8,14 @@
       @click="toggleExpand"
     >
       <div class="ball-content">
-        <span class="ball-icon">🤖</span>
+        <video
+          class="ball-icon-video"
+          src="../assets/video/miku_1.mp4"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
         <span v-if="isExpanded" class="ball-close">×</span>
       </div>
       <!-- 未展开时的提示 -->
@@ -69,8 +76,15 @@
         <!-- 头部 -->
         <div class="panel-header">
           <div class="header-left">
-            <span class="header-icon">🤖</span>
-            <span class="header-title">DeepSeek AI 助手</span>
+            <video
+              class="header-icon-video"
+              src="../assets/video/miku_1.mp4"
+              autoplay
+              loop
+              muted
+              playsinline
+            ></video>
+            <span class="header-title">AI 助手</span>
           </div>
           <div class="header-actions">
             <a-button
@@ -150,7 +164,14 @@
         <div v-else ref="messagesContainer" class="messages-container">
           <!-- 欢迎消息 -->
           <div v-if="messages.length === 0" class="welcome-message">
-            <div class="welcome-icon">🤖</div>
+            <video
+              class="welcome-icon-video"
+              src="../assets/video/miku_1.mp4"
+              autoplay
+              loop
+              muted
+              playsinline
+            ></video>
             <h3>你好！我是 AI 助手</h3>
             <p class="provider-info">DeepSeek · 云端服务</p>
             <p>我可以帮助你：</p>
@@ -169,7 +190,16 @@
             :class="['message', msg.role]"
           >
             <div class="message-avatar">
-              {{ msg.role === 'user' ? '👤' : '🤖' }}
+              <img v-if="msg.role === 'user'" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMyNjY2NjYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMTIgMTFhNS41IDUuNSAwIDAgMS01LjUgNS41IDUuNSA1LjUgMCAwIDEgNS41LTUuNXptLTYgN2EuMy4zIDAgMCAwIC4zLS4zIDMuMyAzLjMgMCAwIDAgLS4zLS4zIDMuMyAzLjMgMCAwIDAgLjMgLjN6bTE1LjUtNS41YTMuMyAzLjMgMCAwIDAtMy4zLTMuMyAzLjMgMy4zIDAgMCAwIDMuMyAzLjN6bS04IDFhMyAzIDAgMSAwIDAtNiAzIDMgMyAwIDAgMCAwIDZ6Ii8+PC9zdmc+" alt="user" />
+              <video
+                v-else
+                class="avatar-video"
+                src="../assets/video/miku_1.mp4"
+                autoplay
+                loop
+                muted
+                playsinline
+              ></video>
             </div>
             <div class="message-content">
               <div class="message-text" v-html="formatMessage(msg.content)"></div>
@@ -183,7 +213,16 @@
 
           <!-- 加载中 -->
           <div v-if="isLoading" class="message assistant loading">
-            <div class="message-avatar">🤖</div>
+            <div class="message-avatar">
+              <video
+                class="avatar-video"
+                src="../assets/video/miku_1.mp4"
+                autoplay
+                loop
+                muted
+                playsinline
+              ></video>
+            </div>
             <div class="message-content">
               <div class="thinking">
                 <span class="dot"></span>
@@ -417,8 +456,8 @@ onUnmounted(() => {
 /* ========== 悬浮球 ========== */
 .floating-ball {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   background: linear-gradient(135deg, #1890ff, #722ed1);
   border-radius: 50% 0 0 50%;
   cursor: pointer;
@@ -427,19 +466,21 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 8px;
+  padding-right: 5px;
 }
 
 .floating-ball:hover {
-  width: 70px;
+  width: 100px;
   box-shadow: 0 6px 24px rgba(24, 144, 255, 0.5);
 }
 
 .floating-ball.expanded {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  padding: 0;
+  padding: 5px;
+  display: flex;
+  align-items: center;
   justify-content: center;
   transform: translateX(10px);
 }
@@ -448,11 +489,44 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .ball-icon {
-  font-size: 28px;
+  font-size: 60px;
+}
+
+/* 悬浮球视频 */
+.ball-icon-video {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 头部视频 */
+.header-icon-video {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 欢迎消息视频 */
+.welcome-icon-video {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+/* 消息头像视频 */
+.avatar-video {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .ball-close {

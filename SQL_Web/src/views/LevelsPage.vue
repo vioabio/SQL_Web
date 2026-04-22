@@ -104,8 +104,6 @@ const getDifficultyText = (difficulty) => {
 
 <style scoped>
 #levelsPage {
-  max-width: 1400px;
-  margin: 0 auto;
   padding: 0 16px;
 }
 
@@ -119,12 +117,12 @@ const getDifficultyText = (difficulty) => {
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 8px;
-  color: #1f2937;
+  color: #000000;
 }
 
 .page-description {
   font-size: 14px;
-  color: #6b7280;
+  color: #19191a;
   margin: 0;
 }
 
@@ -148,7 +146,7 @@ const getDifficultyText = (difficulty) => {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 0;
-  color: #1f2937;
+  color: #000000;
 }
 
 /* 关卡网格 */
@@ -328,17 +326,25 @@ const getDifficultyText = (difficulty) => {
     border-color: #374151;
     color: #f9fafb;
   }
-  
+
   .level-title {
-    color: #f9fafb;
+    color: #ffffff;
   }
-  
+
   .section-title {
-    color: #f9fafb;
+    color: #000000;
   }
-  
+
   .page-title {
-    color: #f9fafb;
+    color: #000000;
+  }
+
+  .page-description {
+    color: #9ca3af;
+  }
+
+  .level-difficulty {
+    color: #9ca3af;
   }
 }
 

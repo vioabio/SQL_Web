@@ -145,8 +145,6 @@ const onSubmit = (sql, res, answerRes, errMsg) => {
 
 <style scoped>
 #learnPage {
-  max-width: 1400px;
-  margin: 0 auto;
   padding: 16px;
 }
 
