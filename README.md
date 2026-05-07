@@ -4,3 +4,5 @@
 用户登陆后可在关卡界面自由选择主线关卡或者自定义关卡，后续会添加更多操作题目
 
 Deepseek的API Key购买地址https://platform.deepseek.com/usage
+项目架构图
+<img width="799" height="1848" alt="架构图" src="https://github.com/user-attachments/assets/657bc14f-4c48-4189-9c2a-ab39fd5b794b" />
